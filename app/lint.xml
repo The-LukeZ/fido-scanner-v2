@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- ChromeOS x86_64 ABI warning is irrelevant for a phone-only QR scanner app -->
+    <issue id="ChromeOsAbiSupport" severity="ignore" />
+</lint>
