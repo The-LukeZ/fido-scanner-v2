@@ -3,6 +3,28 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+fun gitVersionCode(): Int {
+    return try {
+        val tag = providers.exec {
+            commandLine("git", "describe", "--tags", "--match", "v*", "--abbrev=0")
+        }.standardOutput.asText.get().trim().removePrefix("v")
+        val parts = tag.split(".").map { it.toInt() }
+        parts[0] * 10000 + parts[1] * 100 + (parts.getOrNull(2) ?: 0)
+    } catch (_: Exception) {
+        1
+    }
+}
+
+fun gitVersionName(): String {
+    return try {
+        providers.exec {
+            commandLine("git", "describe", "--tags", "--match", "v*", "--abbrev=0")
+        }.standardOutput.asText.get().trim().removePrefix("v")
+    } catch (_: Exception) {
+        "1.0"
+    }
+}
+
 android {
     namespace = "com.example.fidoscannerv2"
     compileSdk {
@@ -15,8 +37,8 @@ android {
         applicationId = "com.example.fidoscannerv2"
         minSdk = 31
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = gitVersionCode()
+        versionName = gitVersionName()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
