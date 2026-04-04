@@ -42,6 +42,15 @@ Fido Scanner V2 is an Android app that scans FIDO2 QR codes for cross-device pas
 - `app/src/main/java/com/example/fidoscannerv2/MainActivity.kt` — entire app logic: permission handling, camera preview (`CameraPreview` composable), QR analysis (`QrAnalyzer`), FIDO dialog, and intent handoff
 - `app/src/main/AndroidManifest.xml` — declares `CAMERA` permission and `uses-feature`
 - `gradle/libs.versions.toml` — version catalog for all dependencies
+- `.github/workflows/release.yml` — builds and signs release APK, publishes GitHub Release on `v*` tag push
+- `docs/index.html` — GitHub Pages landing page with dynamic APK download button (served at `https://the-lukez.github.io/fido-scanner-v2/`)
+
+## Distribution
+
+- **GitHub Releases** — signed APK attached as `fido-scanner-vX.Y.Z.apk` on each release
+- **GitHub Pages** — `docs/index.html` served from `main:/docs`, fetches latest release via GitHub API
+- **Release signing** — `app/build.gradle.kts` reads keystore credentials from env vars (`KEYSTORE_PATH`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`); stored as GitHub Actions secrets (`KEYSTORE_BASE64`, etc.)
+- To publish: `git tag vX.Y.Z && git push origin vX.Y.Z`
 
 ## Key Technical Details
 
