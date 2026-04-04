@@ -44,8 +44,13 @@ jobs:
       - name: Rename APK
         run: mv app/build/outputs/apk/release/app-release.apk fido-scanner-${{ github.ref_name }}.apk
 
+      - name: Clean up keystore
+        if: always()
+        run: rm -f keystore.jks
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: fido-scanner-${{ github.ref_name }}.apk
           generate_release_notes: true
+
