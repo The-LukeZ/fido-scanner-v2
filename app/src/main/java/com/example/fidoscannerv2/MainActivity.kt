@@ -128,7 +128,7 @@ fun FidoScannerApp() {
                         showCamera = false
                         try {
                             context.startActivity(Intent(Intent.ACTION_VIEW, uri.toUri()))
-                        } catch (e: android.content.ActivityNotFoundException) {
+                        } catch (_: android.content.ActivityNotFoundException) {
                             Toast.makeText(context, "No app found to handle FIDO authentication", Toast.LENGTH_LONG).show()
                         }
                     }) {
