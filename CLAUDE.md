@@ -62,3 +62,4 @@ Fido Scanner V2 is an Android app that scans FIDO2 QR codes for cross-device pas
 - **CameraX 1.4.2** — `camera-core`, `camera-camera2`, `camera-lifecycle`, `camera-view` (PreviewView wrapped in `AndroidView`)
 - **ML Kit barcode-scanning 17.3.0** — bundled model (offline), `FORMAT_QR_CODE` only, 1-second debounce
 - FIDO URI handoff via `Intent(ACTION_VIEW, Uri.parse(fidoUri))` — the OS/credential manager handles CTAP2
+- **Minification enabled** (`isMinifyEnabled = true`) — `app/proguard-rules.pro` keeps `Camera2Config$DefaultProvider` (ServiceLoader entry point) and the `analyze()` method on `ImageAnalysis.Analyzer` implementations; all directly referenced CameraX/ML Kit API classes are kept automatically by R8

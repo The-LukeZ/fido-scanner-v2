@@ -45,9 +45,6 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ## TODO
 
-- Optimize apk size (46MB)
-
-  - add `shrinkResources: true`
-  - use ML Kit Unbundled
-
-- Add update functionality (fetch latest release tag and ask user to update)
+- Optimize APK size
+  - Use ML Kit Unbundled instead of bundled model
+- Add update functionality (fetch latest release tag and prompt user to update)
