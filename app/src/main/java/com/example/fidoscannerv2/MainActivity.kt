@@ -17,6 +17,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.lifecycle.awaitInstance
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -128,7 +129,7 @@ fun FidoScannerApp() {
                         showCamera = false
                         try {
                             context.startActivity(Intent(Intent.ACTION_VIEW, uri.toUri()))
-                        } catch (e: android.content.ActivityNotFoundException) {
+                        } catch (_: android.content.ActivityNotFoundException) {
                             Toast.makeText(context, "No app found to handle FIDO authentication", Toast.LENGTH_LONG).show()
                         }
                     }) {
@@ -152,8 +153,14 @@ fun CameraPreview(modifier: Modifier = Modifier, onFidoDetected: (String) -> Uni
     val previewView = remember { PreviewView(context) }
     val executor = remember { Executors.newSingleThreadExecutor() }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            executor.shutdown()
+        }
+    }
+
     LaunchedEffect(lifecycleOwner) {
-        val cameraProvider = ProcessCameraProvider.getInstance(context).get()
+        val cameraProvider = ProcessCameraProvider.awaitInstance(context)
 
         val preview = Preview.Builder().build().also {
             it.surfaceProvider = previewView.surfaceProvider
@@ -166,18 +173,16 @@ fun CameraPreview(modifier: Modifier = Modifier, onFidoDetected: (String) -> Uni
                 it.setAnalyzer(executor, QrAnalyzer(onFidoDetected))
             }
 
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(
-            lifecycleOwner,
-            CameraSelector.DEFAULT_BACK_CAMERA,
-            preview,
-            imageAnalysis
-        )
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            executor.shutdown()
+        try {
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(
+                lifecycleOwner,
+                CameraSelector.DEFAULT_BACK_CAMERA,
+                preview,
+                imageAnalysis
+            )
+        } catch (_: Exception) {
+            // lifecycleOwner was destroyed before we could bind; nothing to do
         }
     }
 
