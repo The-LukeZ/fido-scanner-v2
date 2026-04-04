@@ -59,5 +59,5 @@ Fido Scanner V2 is an Android app that scans FIDO2 QR codes for cross-device pas
 - Edge-to-edge display enabled via `enableEdgeToEdge()`
 - Compose BOM 2026.03.01 manages all Compose library versions
 - **CameraX 1.4.2** — `camera-core`, `camera-camera2`, `camera-lifecycle`, `camera-view` (PreviewView wrapped in `AndroidView`)
-- **ML Kit barcode-scanning 17.3.0** — bundled model (offline), `FORMAT_QR_CODE` only, 1-second debounce
+- **ML Kit barcode-scanning 18.3.1** — unbundled model via Play Services (`play-services-mlkit-barcode-scanning`), `FORMAT_QR_CODE` only, 1-second debounce; model downloaded by Play Services on first use
 - FIDO URI handoff via `Intent(ACTION_VIEW, Uri.parse(fidoUri))` — the OS/credential manager handles CTAP2
