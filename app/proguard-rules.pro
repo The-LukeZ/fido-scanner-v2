@@ -5,17 +5,15 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Preserve stack trace info for debugging
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# CameraX camera2 backend is discovered via ServiceLoader by ProcessCameraProvider —
+# not referenced directly in code, so R8 strips it without this rule.
+-keep class androidx.camera.camera2.Camera2Config$DefaultProvider { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep analyze() on Analyzer implementations so CameraX can invoke it via the interface.
+-keepclassmembers class * implements androidx.camera.core.ImageAnalysis$Analyzer {
+    public void analyze(androidx.camera.core.ImageProxy);
+}
