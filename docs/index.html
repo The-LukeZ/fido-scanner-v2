@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fido Scanner V2</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #f0f6fc;
+    }
+
+    .tagline {
+      color: #8b949e;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .version-badge {
+      display: inline-block;
+      background: #1f6feb22;
+      border: 1px solid #1f6feb55;
+      color: #58a6ff;
+      border-radius: 2em;
+      padding: 0.25em 0.75em;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #238636;
+      color: #fff;
+      border: 1px solid #2ea043;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+      cursor: pointer;
+    }
+
+    .download-btn:hover { background: #2ea043; border-color: #3fb950; }
+    .download-btn:active { background: #1a7f37; }
+    .download-btn.disabled {
+      background: #21262d;
+      border-color: #30363d;
+      color: #8b949e;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .release-notes {
+      margin-top: 1.75rem;
+      text-align: left;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      color: #8b949e;
+      line-height: 1.6;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .release-notes h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6e7681;
+      margin-bottom: 0.5rem;
+    }
+
+    .release-notes p { color: #c9d1d9; }
+
+    .meta {
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: #6e7681;
+    }
+
+    .meta a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+
+    .meta a:hover { text-decoration: underline; }
+
+    .requirements {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1rem;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: #8b949e;
+      text-align: left;
+    }
+
+    .requirements strong { color: #c9d1d9; }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #30363d;
+      border-top-color: #58a6ff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error { color: #f85149; font-size: 0.9rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">&#128250;</div>
+    <h1>Fido Scanner V2</h1>
+    <p class="tagline">
+      Scan FIDO2 QR codes on your phone to complete passkey sign-ins on any device.
+    </p>
+
+    <div id="version-badge" class="version-badge"><span class="spinner"></span></div>
+
+    <div>
+      <a id="download-btn" class="download-btn disabled" href="#" download>
+        &#8595; Download APK
+      </a>
+    </div>
+
+    <div id="release-notes" class="release-notes" style="display:none">
+      <h3>Release notes</h3>
+      <p id="release-notes-body"></p>
+    </div>
+
+    <div class="requirements">
+      <strong>Requirements:</strong> Android 12 (API 31) or higher &middot; Camera permission
+    </div>
+
+    <p class="meta">
+      <a id="releases-link" href="https://github.com/The-LukeZ/fido-scanner-v2/releases">All releases</a>
+      &middot;
+      <a href="https://github.com/The-LukeZ/fido-scanner-v2">Source code</a>
+    </p>
+  </div>
+
+  <script>
+    const REPO = 'The-LukeZ/fido-scanner-v2';
+    const API_URL = `https://api.github.com/repos/${REPO}/releases/latest`;
+
+    async function loadRelease() {
+      const badge = document.getElementById('version-badge');
+      const btn = document.getElementById('download-btn');
+      const notesBox = document.getElementById('release-notes');
+      const notesBody = document.getElementById('release-notes-body');
+      const releasesLink = document.getElementById('releases-link');
+
+      try {
+        const res = await fetch(API_URL, { headers: { Accept: 'application/vnd.github+json' } });
+        if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
+        const release = await res.json();
+
+        const apk = (release.assets || []).find(a => a.name.endsWith('.apk'));
+
+        badge.textContent = release.tag_name || 'Latest';
+        releasesLink.href = `https://github.com/${REPO}/releases`;
+
+        if (apk) {
+          btn.href = apk.browser_download_url;
+          btn.download = apk.name;
+          btn.classList.remove('disabled');
+        } else {
+          badge.textContent = 'No APK yet';
+          btn.textContent = 'No download available';
+        }
+
+        if (release.body && release.body.trim()) {
+          notesBody.textContent = release.body.trim();
+          notesBox.style.display = 'block';
+        }
+      } catch (err) {
+        badge.innerHTML = 'Error loading release';
+        badge.style.color = '#f85149';
+        btn.textContent = 'Could not load download';
+        console.error(err);
+      }
+    }
+
+    loadRelease();
+  </script>
+</body>
+</html>

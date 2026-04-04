@@ -14,3 +14,7 @@
 .cxx
 local.properties
 .kotlin/
+
+# Release keystore — never commit this
+*.jks
+*.keystore
