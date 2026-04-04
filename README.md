@@ -8,6 +8,10 @@ When you're signing in on a PC, it can display a FIDO QR code asking a nearby ph
 
 The app does **not** implement CTAP2 itself — it bridges the camera scan to the OS credential system.
 
+### Is this a public app or what?
+
+No, at least not yet. This is a proof-of-concept app to demonstrate the idea and test the flow. If there's interest, it could be polished and released on the Play Store in the future. Since a Google developer account is required to publish apps, and I don't have one yet, the app is currently only available as an APK that can be sideloaded.
+
 ## Flow
 
 1. Open the app → tap **Scan QR Code**
