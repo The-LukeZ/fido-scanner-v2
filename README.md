@@ -42,3 +42,7 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 - Kotlin + Jetpack Compose + Material 3
 - CameraX 1.4.2 for camera preview
 - ML Kit barcode-scanning 17.3.0 for QR detection
+
+## TODO
+
+- Optimize apk size (46MB)
