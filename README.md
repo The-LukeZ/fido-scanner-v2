@@ -50,4 +50,4 @@ There are commits Co-Authored by Claude. This is due to me not being a senior de
 ## TODO
 
 - Add update functionality (fetch latest release tag and prompt user to update)
-- Opimize Bundle size (currently 20-ish MB, mostly due to ML Kit)
+- Optimize Bundle size (currently 9MB, mostly due to ML Kit - but maybe we can use a smaller barcode scanning library or optimize the proguard rules)
