@@ -45,6 +45,5 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ## TODO
 
-- Optimize APK size
-  - Use ML Kit Unbundled instead of bundled model
 - Add update functionality (fetch latest release tag and prompt user to update)
+- Opimize Bundle size (currently 20-ish MB, mostly due to ML Kit)
