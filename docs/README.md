@@ -39,11 +39,13 @@ docs/
 Locales are defined in `project.inlang/settings.json`. The build produces one static HTML file per locale (e.g. `/en/index.html`, `/de/index.html`). The root `/index.html` redirects to the appropriate locale based on `navigator.language`.
 
 **To add a new locale:**
+
 1. Add it to `locales` in `project.inlang/settings.json` and `astro.config.mjs` (`i18n.locales`)
 2. Create `messages/{locale}.json` with all keys from `messages/en.json` translated
 3. Run `pnpm build` — the new locale is picked up automatically everywhere (routes, language switcher, hreflang tags, root redirect)
 
 **To add a new translatable string:**
+
 1. Add the key to `messages/en.json` and all other locale files
 2. Use `m.your_key()` in `src/pages/[locale]/index.astro`
 
