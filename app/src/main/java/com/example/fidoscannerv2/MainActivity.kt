@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.Keep
 import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
@@ -184,6 +185,7 @@ fun CameraPreview(modifier: Modifier = Modifier, onFidoDetected: (String) -> Uni
     AndroidView(factory = { previewView }, modifier = modifier)
 }
 
+@Keep
 class QrAnalyzer(private val onFidoDetected: (String) -> Unit) : ImageAnalysis.Analyzer {
     private val scanner = BarcodeScanning.getClient(
         BarcodeScannerOptions.Builder()
