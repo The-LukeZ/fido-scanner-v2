@@ -41,6 +41,9 @@ const localeNames = Object.fromEntries(
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
 
+    <!-- This tag identifies the site as built with Astro -->
+    <meta name="generator" content={Astro.generator} />
+
     <!-- hreflang alternates -->
     {
       locales.map((l) => (
