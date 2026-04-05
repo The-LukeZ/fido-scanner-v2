@@ -4,9 +4,24 @@ import { defineConfig } from "astro/config";
 import svelte from "@astrojs/svelte";
 import { paraglideVitePlugin } from "@inlang/paraglide-js";
 
+import sitemap from "@astrojs/sitemap";
+
 // https://astro.build/config
 export default defineConfig({
-  integrations: [svelte()],
+  integrations: [
+    svelte(),
+    sitemap({
+      changefreq: "weekly",
+      priority: 0.5,
+      i18n: {
+        defaultLocale: "en",
+        locales: {
+          en: "en-US",
+          de: "de-DE",
+        },
+      },
+    }),
+  ],
 
   site: "https://fidoscan.thelukez.com/",
   prefetch: true,
