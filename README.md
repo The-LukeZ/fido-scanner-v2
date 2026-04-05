@@ -43,6 +43,10 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 - CameraX 1.4.2 for camera preview
 - ML Kit barcode-scanning 17.3.0 for QR detection
 
+## AI Notice
+
+There are commits Co-Authored by Claude. This is due to me not being a senior dev in Android, so I need help from AI here and there. I still verify all code changes and am responsible for the final product, but I want to be transparent about the fact that AI assistance was used in the development process.
+
 ## TODO
 
 - Add update functionality (fetch latest release tag and prompt user to update)
