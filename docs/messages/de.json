@@ -1,0 +1,17 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "example_message": "Guten Tag {username}",
+  "meta_title": "Fido Scanner V2 — FIDO2-QR-Scanner für Android",
+  "meta_description": "Kostenlose Android-App, die FIDO2-QR-Codes scannt, damit du Passkey-Anmeldungen von jedem Gerät abschließen kannst. Erfordert Android 12 oder höher.",
+  "tagline": "Scanne FIDO2-QR-Codes auf deinem Handy, um Passkey-Anmeldungen auf jedem Gerät abzuschließen.",
+  "download_apk": "↓ APK herunterladen",
+  "release_notes_heading": "Versionshinweise",
+  "requirements_label": "Voraussetzungen:",
+  "requirements_details": "Android 12 (API 31) oder höher · Kameraberechtigung",
+  "all_releases": "Alle Versionen",
+  "source_code": "Quellcode",
+  "no_apk_yet": "Noch keine APK",
+  "no_download_available": "Kein Download verfügbar",
+  "error_loading_release": "Fehler beim Laden",
+  "could_not_load_download": "Download konnte nicht geladen werden"
+}

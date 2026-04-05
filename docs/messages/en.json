@@ -1,0 +1,17 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "example_message": "Hello world {username}",
+  "meta_title": "Fido Scanner V2 — FIDO2 QR Scanner for Android",
+  "meta_description": "Free Android app that scans FIDO2 QR codes so you can complete passkey sign-ins from any device. Requires Android 12 or higher.",
+  "tagline": "Scan FIDO2 QR codes on your phone to complete passkey sign-ins on any device.",
+  "download_apk": "↓ Download APK",
+  "release_notes_heading": "Release notes",
+  "requirements_label": "Requirements:",
+  "requirements_details": "Android 12 (API 31) or higher · Camera permission",
+  "all_releases": "All releases",
+  "source_code": "Source code",
+  "no_apk_yet": "No APK yet",
+  "no_download_available": "No download available",
+  "error_loading_release": "Error loading release",
+  "could_not_load_download": "Could not load download"
+}

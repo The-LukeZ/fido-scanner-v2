@@ -1,11 +1,79 @@
-<!doctype html>
-<html lang="en">
+---
+import {
+  locales,
+  baseLocale,
+  overwriteGetLocale,
+  assertIsLocale,
+} from "../../paraglide/runtime.js";
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({
+    params: { locale },
+  }));
+}
+
+const { locale } = Astro.params;
+overwriteGetLocale(() => assertIsLocale(locale));
+
+// ----------------------
+
+import { m } from "../../paraglide/messages.js";
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const title = m.meta_title();
+const description = m.meta_description();
+
+const localeNames = Object.fromEntries(
+  locales.map((l) => [
+    l,
+    new Intl.DisplayNames([l], { type: "language" }).of(l) ?? l,
+  ]),
+);
+---
+
+<html lang={Astro.params.locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fido Scanner V2</title>
-    <link rel="icon" href="favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- hreflang alternates -->
+    {
+      locales.map((l) => (
+        <link
+          rel="alternate"
+          hreflang={l}
+          href={new URL(`/${l}/`, Astro.site).href}
+        />
+      ))
+    }
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(`/${baseLocale}/`, Astro.site).href}
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={locale} />
+    {
+      locales
+        .filter((l) => l !== locale)
+        .map((l) => <meta property="og:locale:alternate" content={l} />)
+    }
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <style>
       *,
       *::before,
@@ -225,16 +293,55 @@
         font-size: 0.9rem;
         margin-top: 1rem;
       }
+
+      .lang-switcher {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: #161b22;
+        color: #c9d1d9;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238b949e'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        padding-right: 1.5rem;
+      }
+
+      .lang-switcher:hover {
+        border-color: #58a6ff;
+        color: #f0f6fc;
+      }
     </style>
   </head>
   <body>
-    <div class="card">
+    <select id="lang-switcher" class="lang-switcher" aria-label="Language">
+      {
+        locales.map((l) => (
+          <option value={l} selected={l === locale}>
+            {localeNames[l]}
+          </option>
+        ))
+      }
+    </select>
+
+    <div
+      class="card"
+      data-strings={JSON.stringify({
+        noApkYet: m.no_apk_yet(),
+        noDownload: m.no_download_available(),
+        errorBadge: m.error_loading_release(),
+        errorBtn: m.could_not_load_download(),
+      })}
+    >
       <div class="icon">&#128250;</div>
       <h1>Fido Scanner V2</h1>
-      <p class="tagline">
-        Scan FIDO2 QR codes on your phone to complete passkey sign-ins on any
-        device.
-      </p>
+      <p class="tagline">{m.tagline()}</p>
 
       <div id="version-badge" class="version-badge">
         <span class="spinner"></span>
@@ -242,33 +349,36 @@
 
       <div>
         <a id="download-btn" class="download-btn disabled" href="#" download>
-          &#8595; Download APK
+          {m.download_apk()}
         </a>
       </div>
 
       <div id="release-notes" class="release-notes" style="display: none">
-        <h3>Release notes</h3>
+        <h3>{m.release_notes_heading()}</h3>
         <p id="release-notes-body"></p>
       </div>
 
       <div class="requirements">
-        <strong>Requirements:</strong> Android 12 (API 31) or higher &middot;
-        Camera permission
+        <strong>{m.requirements_label()}</strong>
+        {m.requirements_details()}
       </div>
 
       <p class="meta">
         <a
           id="releases-link"
           href="https://github.com/The-LukeZ/fido-scanner-v2/releases"
-          >All releases</a
+          >{m.all_releases()}</a
         >
         &middot;
-        <a href="https://github.com/The-LukeZ/fido-scanner-v2">Source code</a>
+        <a href="https://github.com/The-LukeZ/fido-scanner-v2"
+          >{m.source_code()}</a
+        >
       </p>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
     <script>
+      import { marked } from "marked";
+
       const REPO = "The-LukeZ/fido-scanner-v2";
       const API_URL = `https://api.github.com/repos/${REPO}/releases/latest`;
 
@@ -278,11 +388,17 @@
       });
 
       async function loadRelease() {
-        const badge = document.getElementById("version-badge");
-        const btn = document.getElementById("download-btn");
-        const notesBox = document.getElementById("release-notes");
-        const notesBody = document.getElementById("release-notes-body");
-        const releasesLink = document.getElementById("releases-link");
+        const card = document.querySelector(".card")!;
+        const strings = JSON.parse((card as HTMLElement).dataset.strings!);
+        const badge = document.getElementById("version-badge")!;
+        const btn = document.getElementById(
+          "download-btn",
+        ) as HTMLAnchorElement;
+        const notesBox = document.getElementById("release-notes")!;
+        const notesBody = document.getElementById("release-notes-body")!;
+        const releasesLink = document.getElementById(
+          "releases-link",
+        ) as HTMLAnchorElement;
 
         try {
           const res = await fetch(API_URL, {
@@ -291,7 +407,7 @@
           if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
           const release = await res.json();
 
-          const apk = (release.assets || []).find((a) =>
+          const apk = (release.assets || []).find((a: { name: string }) =>
             a.name.endsWith(".apk"),
           );
 
@@ -303,23 +419,31 @@
             btn.download = apk.name;
             btn.classList.remove("disabled");
           } else {
-            badge.textContent = "No APK yet";
-            btn.textContent = "No download available";
+            badge.textContent = strings.noApkYet;
+            btn.textContent = strings.noDownload;
           }
 
           if (release.body && release.body.trim()) {
-            notesBody.innerHTML = marked.parse(release.body.trim());
+            notesBody.innerHTML = await marked.parse(release.body.trim());
             notesBox.style.display = "block";
           }
         } catch (err) {
-          badge.innerHTML = "Error loading release";
-          badge.style.color = "#f85149";
-          btn.textContent = "Could not load download";
+          badge.innerHTML = strings.errorBadge;
+          (badge as HTMLElement).style.color = "#f85149";
+          btn.textContent = strings.errorBtn;
           console.error(err);
         }
       }
 
       loadRelease();
+
+      document
+        .getElementById("lang-switcher")!
+        .addEventListener("change", function () {
+          const newLocale = (this as HTMLSelectElement).value;
+          const path = window.location.pathname;
+          window.location.href = path.replace(/^\/[^/]+/, "/" + newLocale);
+        });
     </script>
   </body>
 </html>
