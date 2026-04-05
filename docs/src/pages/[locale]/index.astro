@@ -17,6 +17,8 @@ overwriteGetLocale(() => assertIsLocale(locale));
 
 // ----------------------
 
+import { Image } from "astro:assets";
+import productIcon from "../../assets/icon-512.png";
 import { m } from "../../paraglide/messages.js";
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
@@ -234,11 +236,11 @@ const localeNames = Object.fromEntries(
         background: none;
         padding: 0;
       }
-      .release-notes a {
+      .release-notes :global(a) {
         color: #58a6ff;
         text-decoration: none;
       }
-      .release-notes a:hover {
+      .release-notes :global(a:hover) {
         text-decoration: underline;
       }
 
@@ -339,7 +341,13 @@ const localeNames = Object.fromEntries(
         errorBtn: m.could_not_load_download(),
       })}
     >
-      <div class="icon">&#128250;</div>
+      <div class="icon">
+        <Image
+          src={productIcon}
+          alt="Fido Scanner V2 Icon"
+          style="width: 100px; height: 100px;"
+        />
+      </div>
       <h1>Fido Scanner V2</h1>
       <p class="tagline">{m.tagline()}</p>
 
